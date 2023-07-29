@@ -1,10 +1,11 @@
 const express = require('express')
-const {signUp } = require('../controllers/userControllers')
+const { signUp, logIn } = require('../controllers/userControllers')
+const signupValidate = require('../middlewares/userValidation')
 const router = express.Router();
 
-router.post('/signup', signUp )
-
-router.post('/login', )
+router.post('/signup',signupValidate, signUp )
+// додати валідацію
+router.post('/login', logIn)
 
 router.post('/logout', )
 
