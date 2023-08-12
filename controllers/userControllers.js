@@ -51,26 +51,41 @@ const logIn = async (req, res, next) => {
   if (!compareResult) {
     res.status(401).json({ message: "Email or password is wrong!" });
     return;
-   }
-   
-   const payload = {
-      id: user._id,
+  }
+
+  const payload = {
+    id: user._id,
   };
-   
-   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
-   await User.findByIdAndUpdate(user._id, { token });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
 
-   res.status(200).json({
-      user: {
-         name:user.name,
-         email,
-      },
-      token,
-   })
+  await User.findByIdAndUpdate(user._id, { token });
+
+  res.status(200).json({
+    user: {
+      name: user.name,
+      email,
+    },
+    token,
+  });
+};
+
+const logout = async (req, res) => {
+  const { user } = req;
+
+  await User.findByIdAndUpdate(user.id, { token: "" });
+
+  res.sendStatus(204);
+};
+
+const getCurrent = async (req, res) => {
+  const { name, email } = req.user;
+  res.status(200).json({ name, email });
 };
 
 module.exports = {
   signUp,
   logIn,
+  logout,
+  getCurrent,
 };
